@@ -18,10 +18,18 @@ public class Product {
     private Long price;
     private String picture;
     private Integer score;
+
+    @Column(name = "user_id")
+    private Long userId;
+
     @Column(name = "category_id")
     private Long categoryId;
+
     @ManyToOne
     @JoinColumn(name = "category_id", updatable = false, insertable = false)
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name ="user_id", updatable = false, insertable = false)
+    private User user;
 }
