@@ -1,11 +1,10 @@
 package com.academiadodesenvolvedor.ecommerce_api.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "products")
@@ -25,11 +24,11 @@ public class Product {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", updatable = false, insertable = false)
     private Category category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id", updatable = false, insertable = false)
     private User user;
 }

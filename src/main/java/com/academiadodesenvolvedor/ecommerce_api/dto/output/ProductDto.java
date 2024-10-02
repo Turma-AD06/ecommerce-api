@@ -1,5 +1,6 @@
 package com.academiadodesenvolvedor.ecommerce_api.dto.output;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,4 +15,6 @@ public class ProductDto {
     private Long price;
     private String picture;
     private Integer score;
+    @JsonProperty("category_id")
+    private Long categoryId;
 }

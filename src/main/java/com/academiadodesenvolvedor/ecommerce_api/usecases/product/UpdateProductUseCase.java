@@ -13,6 +13,9 @@ public class UpdateProductUseCase {
 
     public Product execute(Long id, Product product){
         Product saved = getProduct.execute(id);
+        if(product.getCategoryId() != null){
+            saved.setCategoryId(product.getCategoryId());
+        }
         if(product.getName() != null){
             saved.setName(product.getName());
         }

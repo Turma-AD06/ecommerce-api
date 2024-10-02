@@ -1,5 +1,6 @@
 package com.academiadodesenvolvedor.ecommerce_api.dto.input;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +16,6 @@ public class CreateProductDto {
     private Long price;
     private String picture;
     private Integer score;
-//    @NotEmpty
-//    private Long categoryId;
+    @JsonProperty("category_id")
+    private Long categoryId;
 }

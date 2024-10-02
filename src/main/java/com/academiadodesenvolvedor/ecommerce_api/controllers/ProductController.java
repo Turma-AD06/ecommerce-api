@@ -4,9 +4,9 @@ import com.academiadodesenvolvedor.ecommerce_api.dto.input.CreateProductDto;
 import com.academiadodesenvolvedor.ecommerce_api.dto.output.ProductDto;
 import com.academiadodesenvolvedor.ecommerce_api.entities.Product;
 import com.academiadodesenvolvedor.ecommerce_api.mappers.ProductMapper;
-import com.academiadodesenvolvedor.ecommerce_api.usecases.product.CreateProductUseCase;
-import com.academiadodesenvolvedor.ecommerce_api.usecases.product.GetAllProductsUseCase;
+import com.academiadodesenvolvedor.ecommerce_api.usecases.product.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +21,9 @@ import java.util.List;
 public class ProductController {
     private final CreateProductUseCase createProductUseCase;
     private final GetAllProductsUseCase getAllProductsUseCase;
+    private final UpdateProductUseCase updateProductUseCase;
+    private final DeleteProductUseCase deleteProductUseCase;
+    private final GetProductByIdUseCase getProductByIdUseCase;
     private final ProductMapper mapper;
 
     @GetMapping
@@ -46,6 +49,28 @@ public class ProductController {
                 HttpStatus.CREATED
         );
     }
-
-
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getById(@PathVariable("id") Long id){
+        Product product = this.getProductByIdUseCase.execute(id);
+        return new ResponseEntity<>(
+                this.mapper.toOutputDto(product),
+                HttpStatus.OK
+        );
+    }
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<ProductDto> update(@PathVariable("id") Long id, @RequestBody @Valid CreateProductDto dto){
+        Product mapped = this.mapper.toEntity(dto);
+        mapped.setCategoryId(dto.getCategoryId());
+        Product product = this.updateProductUseCase.execute(id,mapped );
+        return new ResponseEntity<>(
+                this.mapper.toOutputDto(product),
+                HttpStatus.OK
+        );
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") Long id){
+         this.deleteProductUseCase.execute(id);
+        return ResponseEntity.noContent().build();
+    }
 }
