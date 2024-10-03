@@ -49,6 +49,7 @@ public class ProductController {
                 HttpStatus.CREATED
         );
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getById(@PathVariable("id") Long id){
         Product product = this.getProductByIdUseCase.execute(id);
@@ -68,6 +69,7 @@ public class ProductController {
                 HttpStatus.OK
         );
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id){
          this.deleteProductUseCase.execute(id);

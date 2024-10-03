@@ -1,5 +1,6 @@
 package com.academiadodesenvolvedor.ecommerce_api.filters;
 
+import com.academiadodesenvolvedor.ecommerce_api.usecases.user.GetUserByIdUseCase;
 import com.academiadodesenvolvedor.ecommerce_api.usecases.user.ValidateTokenUseCase;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
@@ -8,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final ValidateTokenUseCase validateTokenUseCase;
+    private final GetUserByIdUseCase getUserByIdUseCase;
 
 
     @Override
@@ -27,16 +28,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain
-    ) throws ServletException, IOException
-    {
+    ) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
-        if(header == null){
+        if (header == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        DecodedJWT tokenDecoded = this.validateTokenUseCase.execute(header.replace("Bearer ",""));
-        request.setAttribute("user_id",Long.valueOf(tokenDecoded.getSubject()));
+        DecodedJWT tokenDecoded = this.validateTokenUseCase.execute(header.replace("Bearer ", ""));
+        request.setAttribute("user_id", Long.valueOf(tokenDecoded.getSubject()));
 
         UsernamePasswordAuthenticationToken authUser = new UsernamePasswordAuthenticationToken(
                 tokenDecoded,
@@ -44,6 +44,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 List.of());
         SecurityContextHolder.getContext().setAuthentication(authUser);
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }

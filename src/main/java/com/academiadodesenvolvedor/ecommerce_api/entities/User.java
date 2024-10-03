@@ -1,6 +1,5 @@
 package com.academiadodesenvolvedor.ecommerce_api.entities;
 
-import com.academiadodesenvolvedor.ecommerce_api.entities.enums.Roles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,11 +17,17 @@ public class User {
     private Long id;
     private String name;
     private String password;
-    private Roles role;
 
     @Column(unique = true)
     private String email;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Product> products;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles;
 }
