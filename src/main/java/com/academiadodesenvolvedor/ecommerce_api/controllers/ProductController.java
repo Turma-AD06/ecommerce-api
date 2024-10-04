@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +28,8 @@ public class ProductController {
     private final ProductMapper mapper;
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> getAll(){
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<List<ProductDto>> getAll() {
         List<Product> products = this.getAllProductsUseCase.execute();
         List<ProductDto> productDtos = products.stream().map(this.mapper::toOutputDto).toList();
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
@@ -36,8 +38,8 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductDto> create(
             @RequestBody @Valid CreateProductDto dto,
-                                             HttpServletRequest request
-    ){
+            HttpServletRequest request
+    ) {
         Long userId = Long.valueOf(request.getAttribute("user_id").toString());
         Product product = this.mapper.toEntity(dto);
         product.setUserId(userId);
@@ -51,19 +53,21 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getById(@PathVariable("id") Long id){
+    public ResponseEntity<ProductDto> getById(@PathVariable("id") Long id) {
         Product product = this.getProductByIdUseCase.execute(id);
         return new ResponseEntity<>(
                 this.mapper.toOutputDto(product),
                 HttpStatus.OK
         );
     }
+
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<ProductDto> update(@PathVariable("id") Long id, @RequestBody @Valid CreateProductDto dto){
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<ProductDto> update(@PathVariable("id") Long id, @RequestBody @Valid CreateProductDto dto) {
         Product mapped = this.mapper.toEntity(dto);
         mapped.setCategoryId(dto.getCategoryId());
-        Product product = this.updateProductUseCase.execute(id,mapped );
+        Product product = this.updateProductUseCase.execute(id, mapped);
         return new ResponseEntity<>(
                 this.mapper.toOutputDto(product),
                 HttpStatus.OK
@@ -71,8 +75,9 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Long id){
-         this.deleteProductUseCase.execute(id);
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+        this.deleteProductUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 }
