@@ -22,6 +22,8 @@ public class CreateOrderUseCase {
     @Transactional
     public Order execute(Long userId, CreateOrderDto order) {
         List<OrderItem> orderItemList = new ArrayList<>();
+        Order orderToStore = new Order();
+        orderToStore.setUserId(userId);
 
         Long totalPrice = order.getProducts().stream().map(productOrder -> {
             Product product = this.getProductByIdUseCase.execute(productOrder.getProductId());
@@ -30,14 +32,13 @@ public class CreateOrderUseCase {
             item.setProductId(product.getId());
             item.setQuantity(productOrder.getQuantity());
             item.setUnitPrice(product.getPrice());
+            item.setOrder(orderToStore);
             orderItemList.add(item);
 
             return product.getPrice() * productOrder.getQuantity();
         }).reduce(0L, Long::sum);
 
-        Order orderToStore = new Order();
 
-        orderToStore.setUserId(userId);
         orderToStore.setTotalPrice(totalPrice);
         orderToStore.setOrderItems(orderItemList);
 
