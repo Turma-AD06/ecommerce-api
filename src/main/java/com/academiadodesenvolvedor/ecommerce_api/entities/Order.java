@@ -22,6 +22,12 @@ public class Order {
     @Column(name = "total_price")
     private Long totalPrice;
 
+    @Column(name = "payment_intent_id")
+    private String paymentIntentId;
+
+    @Column(name = "payment_url")
+    private String paymentUrl;
+
     @ManyToOne
     @JoinColumn(name = "user_id", updatable = false, insertable = false)
     private User user;

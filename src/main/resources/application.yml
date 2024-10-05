@@ -11,6 +11,10 @@ spring:
     name: ecommerce-api
 
 app:
+  stripe:
+    success-url: http://localhost:3000/payment/success
+    cancel-url: http://localhost:3000/payment/cancel
+    private-key: sk_test_51KIxmUL8dGpmIZua7Op8Yf9eYMt2vVNDkyGbM2USJ0YCPvxFPC75gN7qPxtKdoFoCX1hGtZLD2tSgB2wmbyL5wxF00S1m1nGrW
   jwt:
     secret: secret
     expiration: 2
