@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @RequiredArgsConstructor
 public class SecuritySetting {
     private static final String[] PUBLIC_GET_ROUTES = {};
-    private static final String[] PUBLIC_POST_ROUTES = {"/auth/**"};
+    private static final String[] PUBLIC_POST_ROUTES = {"/auth/**", "/webhook/stripe"};
     private final JwtAuthFilter filterJwt;
 
 

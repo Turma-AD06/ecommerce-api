@@ -1,5 +1,6 @@
 package com.academiadodesenvolvedor.ecommerce_api.entities;
 
+import com.academiadodesenvolvedor.ecommerce_api.entities.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,8 +26,12 @@ public class Order {
     @Column(name = "payment_intent_id")
     private String paymentIntentId;
 
-    @Column(name = "payment_url")
+    @Lob
+    @Column(name = "payment_url", columnDefinition = "TEXT")
     private String paymentUrl;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status = OrderStatus.PENDING;
 
     @ManyToOne
     @JoinColumn(name = "user_id", updatable = false, insertable = false)
