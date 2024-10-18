@@ -44,6 +44,7 @@ public class ProductController {
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('SELLER')")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ProductDto> create(
             @ModelAttribute @Valid CreateProductDto dto,
